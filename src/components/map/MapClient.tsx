@@ -32,6 +32,7 @@ const MapClient = () => {
             const { data, error } = await supabase
                 .from('profiles')
                 .select('*')
+                .neq('status', 'suspended')
 
             if (error) {
                 console.error('Error fetching profiles:', error)

@@ -57,6 +57,21 @@ const UMKMPage = () => {
         return <div className="min-h-screen flex items-center justify-center text-red-500">UMKM tidak ditemukan</div>
     }
 
+    if (profile.status === 'suspended') {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center p-4 text-center">
+                <span className="text-6xl mb-4">⚠️</span>
+                <h1 className="text-2xl font-bold text-gray-800 mb-2">Akun Ditangguhkan</h1>
+                <p className="text-gray-600 max-w-md">
+                    Halaman UMKM ini sedang ditangguhkan karena melanggar ketentuan layanan.
+                </p>
+                <a href="/" className="mt-8 text-indigo-600 hover:text-indigo-800 font-medium">
+                    &larr; Kembali ke Peta
+                </a>
+            </div>
+        )
+    }
+
     return (
         <main className="min-h-screen bg-gray-50 pb-20">
             {/* Header / Hero */}

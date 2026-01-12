@@ -9,6 +9,8 @@ export interface Profile {
     latitude: number | null
     longitude: number | null
     tipe_akun: 'free' | 'premium'
+    role?: 'user' | 'admin'
+    status?: 'active' | 'suspended'
 }
 
 export interface Product {

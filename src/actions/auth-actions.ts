@@ -10,17 +10,33 @@ export async function login(prevState: any, formData: FormData) {
     const email = formData.get('email') as string
     const password = formData.get('password') as string
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data: { user }, error } = await supabase.auth.signInWithPassword({
         email,
         password,
     })
 
-    if (error) {
-        return { error: error.message, success: false }
+    if (error || !user) {
+        return { error: error?.message || 'Login failed', success: false }
+    }
+
+    // Check Status Logic
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('status, role')
+        .eq('id', user.id)
+        .single()
+
+    if (profile?.status === 'suspended') {
+        await supabase.auth.signOut()
+        return { error: 'Akun Anda telah di-suspend karena melanggar ketentuan. Hubungi admin.', success: false }
     }
 
     revalidatePath('/', 'layout')
-    revalidatePath('/', 'layout')
+
+    if (profile?.role === 'admin') {
+        redirect('/admin/dashboard')
+    }
+
     redirect('/dashboard')
 }
 
