@@ -48,6 +48,12 @@ export default function LoginPage() {
                         />
                     </div>
 
+                    <div className="flex items-center justify-end">
+                        <a href="/forgot-password" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                            Lupa password?
+                        </a>
+                    </div>
+
                     <button
                         type="submit"
                         disabled={isPending}

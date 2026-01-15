@@ -3,6 +3,7 @@
 import { Profile } from '@/types'
 import { useActionState, useState } from 'react'
 import { updateProfile } from '@/actions/dashboard-actions'
+import { changePassword } from '@/actions/auth-actions'
 import LocationPicker from '@/components/map/LocationPicker'
 
 export default function ProfileEditor({ profile, email }: { profile: Profile, email?: string }) {
@@ -12,6 +13,10 @@ export default function ProfileEditor({ profile, email }: { profile: Profile, em
     // Location State
     const [lat, setLat] = useState(profile.latitude || null)
     const [lng, setLng] = useState(profile.longitude || null)
+
+    // Password Change State
+    const [showPasswordChange, setShowPasswordChange] = useState(false)
+    const [passwordState, passwordAction, isPasswordPending] = useActionState(changePassword, { success: false, message: '', error: '' })
 
     const handleLocationChange = (newLat: number, newLng: number) => {
         setLat(newLat)
@@ -68,6 +73,8 @@ export default function ProfileEditor({ profile, email }: { profile: Profile, em
             </div>
         )
     }
+
+
 
     return (
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-gray-100">
@@ -158,6 +165,54 @@ export default function ProfileEditor({ profile, email }: { profile: Profile, em
                     </button>
                 </div>
             </form >
+
+            {/* Change Password Section */}
+            <div className="mt-8 pt-8 border-t border-gray-200">
+                <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-lg font-bold text-gray-900">Ubah Password</h3>
+                    <button
+                        onClick={() => setShowPasswordChange(!showPasswordChange)}
+                        className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                    >
+                        {showPasswordChange ? 'Batal Ubah Password' : 'Ganti Password'}
+                    </button>
+                </div>
+
+                {showPasswordChange && (
+                    <form action={passwordAction} className="bg-gray-50 p-4 rounded-lg space-y-4">
+                        {passwordState.success && (
+                            <div className="bg-green-100 text-green-700 p-3 rounded-lg text-sm border border-green-200">
+                                {passwordState.message}
+                            </div>
+                        )}
+                        {passwordState.error && (
+                            <div className="bg-red-100 text-red-700 p-3 rounded-lg text-sm border border-red-200">
+                                {passwordState.error}
+                            </div>
+                        )}
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Password Lama</label>
+                            <input type="password" name="oldPassword" required className="w-full px-4 py-2 border rounded-lg text-gray-900 bg-white" />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Password Baru</label>
+                                <input type="password" name="newPassword" required className="w-full px-4 py-2 border rounded-lg text-gray-900 bg-white" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Konfirmasi Password Baru</label>
+                                <input type="password" name="confirmPassword" required className="w-full px-4 py-2 border rounded-lg text-gray-900 bg-white" />
+                            </div>
+                        </div>
+                        <div className="flex justify-end">
+                            <button type="submit" disabled={isPasswordPending} className="px-4 py-2 bg-gray-800 text-white rounded-lg font-medium hover:bg-gray-900 disabled:opacity-50 text-sm">
+                                {isPasswordPending ? 'Menyimpan...' : 'Simpan Password Baru'}
+                            </button>
+                        </div>
+                    </form>
+                )}
+            </div>
         </div >
     )
 }
