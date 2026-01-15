@@ -5,7 +5,7 @@ import { useActionState, useState } from 'react'
 import { updateProfile } from '@/actions/dashboard-actions'
 import LocationPicker from '@/components/map/LocationPicker'
 
-export default function ProfileEditor({ profile }: { profile: Profile }) {
+export default function ProfileEditor({ profile, email }: { profile: Profile, email?: string }) {
     const [isEditing, setIsEditing] = useState(false)
     const [state, formAction, isPending] = useActionState(updateProfile, { success: false, message: '', error: '' })
 
@@ -55,6 +55,10 @@ export default function ProfileEditor({ profile }: { profile: Profile }) {
                             <p className="text-sm text-gray-500 uppercase tracking-wide font-semibold">WhatsApp</p>
                             <p className="text-gray-900 font-medium">{profile.no_wa || '-'}</p>
                         </div>
+                        <div>
+                            <p className="text-sm text-gray-500 uppercase tracking-wide font-semibold">Email</p>
+                            <p className="text-gray-900 font-medium">{email || '-'}</p>
+                        </div>
                         <div className="md:col-span-2">
                             <p className="text-sm text-gray-500 uppercase tracking-wide font-semibold">Deskripsi</p>
                             <p className="text-gray-900 mt-1">{profile.deskripsi || '-'}</p>
@@ -67,7 +71,7 @@ export default function ProfileEditor({ profile }: { profile: Profile }) {
 
     return (
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-gray-100">
-            <h2 className="text-xl font-bold mb-4">Edit Profil UMKM</h2>
+            <h2 className="text-xl font-bold mb-4 text-gray-900">Edit Profil UMKM</h2>
 
             {state.success && (
                 <div className="mb-4 bg-green-50 text-green-700 p-3 rounded-lg border border-green-200">
@@ -100,12 +104,23 @@ export default function ProfileEditor({ profile }: { profile: Profile }) {
                 </div>
 
                 <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="text" value={email || ''} disabled className="w-full px-4 py-2 border rounded-lg text-gray-500 bg-gray-100 cursor-not-allowed" />
+                </div>
+
+                <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
                     <select name="kategori" defaultValue={profile.kategori || 'Lainnya'} className="w-full px-4 py-2 border rounded-lg text-gray-900 bg-white">
-                        <option value="Makanan">Makanan</option>
-                        <option value="Kerajinan">Kerajinan</option>
-                        <option value="Jasa">Jasa</option>
-                        <option value="Fashion">Fashion</option>
+                        <option value="Kuliner (Makanan & Minuman)">Kuliner (Makanan & Minuman)</option>
+                        <option value="Fashion & Tekstil">Fashion & Tekstil</option>
+                        <option value="Pertanian & Peternakan">Pertanian & Peternakan</option>
+                        <option value="Perikanan & Kelautan">Perikanan & Kelautan</option>
+                        <option value="Jasa & Kecantikan">Jasa & Kecantikan</option>
+                        <option value="Kerajinan & Industri Kreatif">Kerajinan & Industri Kreatif</option>
+                        <option value="Perdagangan & Retail">Perdagangan & Retail</option>
+                        <option value="Teknologi & Digital">Teknologi & Digital</option>
+                        <option value="Otomotif & Bengkel">Otomotif & Bengkel</option>
+                        <option value="Kesehatan & Farmasi">Kesehatan & Farmasi</option>
                         <option value="Lainnya">Lainnya</option>
                     </select>
                 </div>
@@ -142,7 +157,7 @@ export default function ProfileEditor({ profile }: { profile: Profile }) {
                         Batal
                     </button>
                 </div>
-            </form>
-        </div>
+            </form >
+        </div >
     )
 }

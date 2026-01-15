@@ -33,7 +33,7 @@ export default async function DashboardPage() {
                 </div>
 
                 {/* Profile Section */}
-                <ProfileEditor profile={profile} />
+                <ProfileEditor profile={profile} email={user.email} />
 
                 {/* Products Section */}
                 <ProductManager products={products || []} />

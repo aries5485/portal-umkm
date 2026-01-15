@@ -5,7 +5,7 @@ export interface Profile {
     nama_pemilik: string | null
     no_wa: string | null
     header_url: string | null
-    kategori: 'Makanan' | 'Kerajinan' | 'Jasa' | 'Fashion' | 'Lainnya' | null
+    kategori: 'Kuliner (Makanan & Minuman)' | 'Fashion & Tekstil' | 'Pertanian & Peternakan' | 'Perikanan & Kelautan' | 'Jasa & Kecantikan' | 'Kerajinan & Industri Kreatif' | 'Perdagangan & Retail' | 'Teknologi & Digital' | 'Otomotif & Bengkel' | 'Kesehatan & Farmasi' | 'Lainnya' | null
     latitude: number | null
     longitude: number | null
     tipe_akun: 'free' | 'premium'
