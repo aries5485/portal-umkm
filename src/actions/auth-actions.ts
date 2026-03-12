@@ -48,8 +48,10 @@ export async function signup(prevState: any, formData: FormData) {
     const nama_umkm = formData.get('nama_umkm') as string
 
     if (!email || !password || !nama_umkm) {
-        return { error: 'Semua field harus diisi.', success: false }
+        return { error: 'Semua field harus diisi.', success: false, message: '' }
     }
+
+    const origin = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 
     // 1. Sign Up with Metadata
     const { data: { user }, error: authError } = await supabase.auth.signUp({
@@ -58,20 +60,22 @@ export async function signup(prevState: any, formData: FormData) {
         options: {
             data: {
                 nama_umkm: nama_umkm,
-            }
+            },
+            emailRedirectTo: `${origin}/auth/callback?next=/dashboard`,
         }
     })
 
     if (authError) {
-        return { error: authError.message, success: false }
+        return { error: authError.message, success: false, message: '' }
     }
 
     // Profile creation is now handled by the Database Trigger 'on_auth_user_created'.
-    // We don't need to manually insert into 'profiles'.
 
-    revalidatePath('/', 'layout')
-    revalidatePath('/', 'layout')
-    redirect('/dashboard')
+    return {
+        success: true,
+        message: `Email verifikasi telah dikirim ke ${email}. Silakan cek inbox Anda untuk menyelesaikan pendaftaran.`,
+        error: '',
+    }
 }
 
 export async function logout() {
