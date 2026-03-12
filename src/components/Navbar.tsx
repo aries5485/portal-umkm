@@ -25,10 +25,11 @@ export default function Navbar({ user, role }: { user: User | null; role?: strin
                                 <>
                                     <span className="text-sm font-medium text-gray-600">Halo, {user.email?.split('@')[0]}</span>
                                     <AboutUsModal />
-                                    {role === 'admin' && (
+                                    {role === 'admin' ? (
                                         <a href="/admin/dashboard" className="text-sm font-medium bg-indigo-600 text-white px-4 py-1.5 rounded-full hover:bg-indigo-700 hover:shadow-md transition">Dashboard</a>
+                                    ) : (
+                                        <a href="/dashboard" className="text-sm font-medium bg-emerald-600 text-white px-4 py-1.5 rounded-full hover:bg-emerald-700 hover:shadow-md transition">Toko Saya</a>
                                     )}
-                                    <a href="/dashboard" className="text-sm font-medium bg-emerald-600 text-white px-4 py-1.5 rounded-full hover:bg-emerald-700 hover:shadow-md transition">Toko Saya</a>
                                     <button
                                         onClick={() => setShowLogoutConfirm(true)}
                                         className="text-red-500 hover:text-red-700 text-sm font-medium transition"
@@ -65,10 +66,11 @@ export default function Navbar({ user, role }: { user: User | null; role?: strin
                                 <>
                                     <span className="text-sm font-medium text-gray-500 px-2">👤 {user.email}</span>
                                     <div className="px-2"><AboutUsModal /></div>
-                                    {role === 'admin' && (
+                                    {role === 'admin' ? (
                                         <a href="/admin/dashboard" className="text-center text-sm font-medium bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 shadow-sm transition">Dashboard</a>
+                                    ) : (
+                                        <a href="/dashboard" className="text-center text-sm font-medium bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 shadow-sm transition">Toko Saya</a>
                                     )}
-                                    <a href="/dashboard" className="text-center text-sm font-medium bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 shadow-sm transition">Toko Saya</a>
                                     <button
                                         onClick={() => {
                                             setIsOpen(false)

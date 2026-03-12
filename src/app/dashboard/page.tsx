@@ -12,11 +12,35 @@ export default async function DashboardPage() {
         redirect('/login')
     }
 
-    // Fetch Profile & Products
-    const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single()
-    const { data: products } = await supabase.from('products').select('*').eq('umkm_id', user.id).order('created_at', { ascending: false })
+    // Redirect admin to admin dashboard
+    const { data: roleCheck } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+    if (roleCheck?.role === 'admin') {
+        redirect('/admin/dashboard')
+    }
 
-    if (!profile) return <div>Error loading profile</div>
+    // Fetch Profile & Products
+    let { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single()
+
+    // Auto-create profile if it doesn't exist (e.g. admin created directly in Supabase)
+    if (!profile) {
+        const { data: newProfile, error: insertError } = await supabase
+            .from('profiles')
+            .insert({
+                id: user.id,
+                nama_umkm: user.email?.split('@')[0] || 'UMKM Baru',
+                tipe_akun: 'free',
+                kategori: 'Lainnya',
+            })
+            .select('*')
+            .single()
+
+        if (insertError || !newProfile) {
+            return <div>Error loading profile</div>
+        }
+        profile = newProfile
+    }
+
+    const { data: products } = await supabase.from('products').select('*').eq('umkm_id', user.id).order('created_at', { ascending: false })
 
     return (
         <main className="min-h-screen bg-gray-50 py-8 px-4">

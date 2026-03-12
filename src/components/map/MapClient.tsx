@@ -23,6 +23,49 @@ function LocationMarker() {
     return null
 }
 
+function LocateButton() {
+    const map = useMap()
+    const [locating, setLocating] = useState(false)
+
+    const handleLocate = () => {
+        setLocating(true)
+        map.locate().on("locationfound", function (e) {
+            map.flyTo(e.latlng, 14, {
+                animate: true,
+                duration: 1.5
+            })
+            setLocating(false)
+        }).on("locationerror", function () {
+            setLocating(false)
+            alert("Tidak dapat menemukan lokasi Anda. Pastikan GPS aktif.")
+        })
+    }
+
+    return (
+        <button
+            onClick={handleLocate}
+            disabled={locating}
+            className="absolute bottom-6 right-4 z-[1000] bg-white hover:bg-gray-50 text-gray-700 w-11 h-11 rounded-full shadow-lg border border-gray-200 flex items-center justify-center transition-all hover:shadow-xl active:scale-95 disabled:opacity-60"
+            title="Lokasi Saya"
+        >
+            {locating ? (
+                <svg className="w-5 h-5 animate-spin text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+            ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="4" />
+                    <path d="M12 2v4" />
+                    <path d="M12 18v4" />
+                    <path d="M2 12h4" />
+                    <path d="M18 12h4" />
+                </svg>
+            )}
+        </button>
+    )
+}
+
 const MapClient = () => {
     const [profiles, setProfiles] = useState<Profile[]>([])
     const supabase = createClient()
@@ -57,6 +100,7 @@ const MapClient = () => {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 <LocationMarker />
+                <LocateButton />
                 {profiles.map((profile) => (
                     profile.latitude && profile.longitude && (
                         <Marker

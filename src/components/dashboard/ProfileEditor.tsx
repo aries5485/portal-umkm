@@ -1,14 +1,24 @@
 'use client'
 
 import { Profile } from '@/types'
-import { useActionState, useState } from 'react'
+import { useActionState, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { updateProfile } from '@/actions/dashboard-actions'
 import { changePassword } from '@/actions/auth-actions'
 import LocationPicker from '@/components/map/LocationPicker'
 
 export default function ProfileEditor({ profile, email }: { profile: Profile, email?: string }) {
+    const router = useRouter()
     const [isEditing, setIsEditing] = useState(false)
     const [state, formAction, isPending] = useActionState(updateProfile, { success: false, message: '', error: '' })
+
+    // Auto-close form and refresh data on successful save
+    useEffect(() => {
+        if (state.success) {
+            setIsEditing(false)
+            router.refresh()
+        }
+    }, [state.success, router])
 
     // Location State
     const [lat, setLat] = useState(profile.latitude || null)

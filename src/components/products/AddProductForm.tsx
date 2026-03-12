@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useEffect } from 'react'
 import { addProduct } from '@/actions/product-actions'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -15,11 +15,16 @@ export default function AddProductForm() {
     const [successMsg, setSuccessMsg] = useState('')
     const router = useRouter()
 
-    // Helper to handle client-side success message if needed, though state update handles it.
-    if (state.success && !successMsg) {
-        setSuccessMsg('Produk berhasil ditambahkan!')
-        // Reset form or redirect if needed
-    }
+    // Auto-redirect to dashboard after successful add
+    useEffect(() => {
+        if (state.success && !successMsg) {
+            setSuccessMsg('Produk berhasil ditambahkan! Mengalihkan...')
+            setTimeout(() => {
+                router.push('/dashboard')
+                router.refresh()
+            }, 1500)
+        }
+    }, [state.success, successMsg, router])
 
     return (
         <form action={formAction} className="space-y-6 bg-white p-8 rounded-xl shadow-md border border-gray-100 max-w-lg mx-auto">
@@ -81,13 +86,21 @@ export default function AddProductForm() {
                 <p className="text-xs text-gray-500 mt-1">Upload foto dari perangkat Anda (Maks 2MB).</p>
             </div>
 
-            <button
-                type="submit"
-                disabled={isPending}
-                className="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-                {isPending ? 'Menyimpan...' : 'Simpan Produk'}
-            </button>
+            <div className="flex gap-3 pt-2">
+                <a
+                    href="/dashboard"
+                    className="flex-1 text-center bg-gray-100 text-gray-700 font-bold py-3 rounded-lg hover:bg-gray-200 transition"
+                >
+                    Batal
+                </a>
+                <button
+                    type="submit"
+                    disabled={isPending}
+                    className="flex-1 bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    {isPending ? 'Menyimpan...' : 'Simpan Produk'}
+                </button>
+            </div>
         </form>
     )
 }
